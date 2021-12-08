@@ -7,8 +7,6 @@ package diff
 import (
 	"fmt"
 	"reflect"
-
-	"github.com/vmihailenco/msgpack"
 )
 
 func (d *Differ) diffMap(path []string, a, b reflect.Value) error {
@@ -54,17 +52,7 @@ func (d *Differ) mapValues(t string, path []string, a reflect.Value) error {
 		ae := a.MapIndex(k)
 		xe := x.MapIndex(k)
 
-		var err error
-		if d.StructMapKeys {
-			//it's not enough to turn k to a string, we need to able to  marshal a type when
-			//we apply it in patch so... we'll marshal it to JSON
-			var b []byte
-			if b, err = msgpack.Marshal(k.Interface()); err == nil {
-				err = d.diff(append(path, string(b)), xe, ae, a.Interface())
-			}
-		} else {
-			err = d.diff(append(path, fmt.Sprint(k.Interface())), xe, ae, a.Interface())
-		}
+		err := d.diff(append(path, fmt.Sprint(k.Interface())), xe, ae, a.Interface())
 		if err != nil {
 			return err
 		}

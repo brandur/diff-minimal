@@ -117,7 +117,6 @@ func Merge(original interface{}, changed interface{}, target interface{}) (Patch
 // Merge is a convenience function that diffs, the original and changed items
 // and merges said changes with target all in one call.
 func (d *Differ) Merge(original interface{}, changed interface{}, target interface{}) (PatchLog, error) {
-	StructMapKeySupport()(d) // nolint: errcheck
 	if cl, err := d.Diff(original, changed); err == nil {
 		return Patch(cl, target), nil
 	} else {

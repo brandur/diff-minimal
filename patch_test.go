@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/r3labs/diff/v2"
+	"github.com/brandur/diff-minimal"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -239,8 +239,6 @@ func TestPatch(t *testing.T) {
 
 			var options []func(d *diff.Differ) error
 			switch tc.Name {
-			case "mixed-slice-map", "nil-map", "map-nil":
-				options = append(options, diff.StructMapKeySupport())
 			case "embedded-struct-field":
 				options = append(options, diff.FlattenEmbeddedStructs())
 			case "custom-tags":

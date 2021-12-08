@@ -3,26 +3,11 @@ package diff
 import (
 	"errors"
 	"reflect"
-
-	"github.com/vmihailenco/msgpack"
 )
 
 //renderMap - handle map rendering for patch
 func (d *Differ) renderMap(c *ChangeValue) (m, k, v *reflect.Value) {
-	//we must tease out the type of the key, we use the msgpack from diff to recreate the key
-	kt := c.target.Type().Key()
-	field := reflect.New(kt)
-
-	if d.StructMapKeys {
-		if err := msgpack.Unmarshal([]byte(c.change.Path[c.pos]), field.Interface()); err != nil {
-			c.SetFlag(FlagIgnored)
-			c.AddError(NewError("Unable to unmarshal path element to target type for key in map", err))
-			return
-		}
-		c.key = field.Elem()
-	} else {
-		c.key = reflect.ValueOf(c.change.Path[c.pos])
-	}
+	c.key = reflect.ValueOf(c.change.Path[c.pos])
 
 	if c.target.IsNil() && c.target.IsValid() {
 		c.target.Set(reflect.MakeMap(c.target.Type()))

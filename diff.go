@@ -10,8 +10,6 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
-
-	"github.com/vmihailenco/msgpack"
 )
 
 const (
@@ -32,7 +30,6 @@ type Differ struct {
 	cl                     Changelog
 	AllowTypeMismatch      bool
 	DiscardParent          bool
-	StructMapKeys          bool
 	FlattenEmbeddedStructs bool
 	ConvertCompatibleTypes bool
 	Filter                 FilterFunc
@@ -254,21 +251,6 @@ func swapChange(t string, c Change) Change {
 	return nc
 }
 
-func idComplex(v interface{}) string {
-	switch v := v.(type) {
-	case string:
-		return v
-	case int:
-		return strconv.Itoa(v)
-	default:
-		b, err := msgpack.Marshal(v)
-		if err != nil {
-			panic(err)
-		}
-		return string(b)
-	}
-
-}
 func idstring(v interface{}) string {
 	switch v := v.(type) {
 	case string:

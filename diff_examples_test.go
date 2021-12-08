@@ -5,7 +5,7 @@ import (
 	"math/big"
 	"reflect"
 
-	"github.com/r3labs/diff/v2"
+	"github.com/brandur/diff-minimal"
 )
 
 //Try to do a bunch of stuff that will result in some or all failures
@@ -190,7 +190,7 @@ func ExamplePrimitiveSlice() {
 		"ok",
 	}
 
-	patch, err := diff.Diff(sla, slb, diff.StructMapKeySupport())
+	patch, err := diff.Diff(sla, slb)
 	if err != nil {
 		fmt.Print("failed to diff sla and slb")
 	}
@@ -303,7 +303,7 @@ func ExampleComplexSlicePatch() {
 	}
 	c := Attributes{}
 
-	changelog, err := diff.Diff(a, b, diff.DiscardComplexOrigin(), diff.StructMapKeySupport())
+	changelog, err := diff.Diff(a, b, diff.DiscardComplexOrigin())
 	if err != nil {
 		panic(err)
 	}

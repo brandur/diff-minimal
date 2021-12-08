@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/r3labs/diff/v2"
+	"github.com/brandur/diff-minimal"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -316,20 +316,6 @@ func TestDiff(t *testing.T) {
 			nil,
 		},
 		{
-			"map-nil", map[string]string{"one": "test"}, nil,
-			diff.Changelog{
-				diff.Change{Type: diff.DELETE, Path: []string{"\xa3one"}, From: "test", To: nil},
-			},
-			nil,
-		},
-		{
-			"nil-map", nil, map[string]string{"one": "test"},
-			diff.Changelog{
-				diff.Change{Type: diff.CREATE, Path: []string{"\xa3one"}, From: nil, To: "test"},
-			},
-			nil,
-		},
-		{
 			"nested-map-insert", map[string]map[string]string{"a": {"test": "123"}}, map[string]map[string]string{"a": {"test": "123", "tset": "456"}},
 			diff.Changelog{
 				diff.Change{Type: diff.CREATE, Path: []string{"a", "tset"}, To: "456"},
@@ -521,15 +507,6 @@ func TestDiff(t *testing.T) {
 			nil,
 		},
 		{
-			"mixed-slice-map", []map[string]interface{}{{"name": "name1", "type": []string{"null", "string"}}}, []map[string]interface{}{{"name": "name1", "type": []string{"null", "int"}}, {"name": "name2", "type": []string{"null", "string"}}},
-			diff.Changelog{
-				diff.Change{Type: diff.UPDATE, Path: []string{"0", "type", "1"}, From: "string", To: "int"},
-				diff.Change{Type: diff.CREATE, Path: []string{"1", "\xa4name"}, From: nil, To: "name2"},
-				diff.Change{Type: diff.CREATE, Path: []string{"1", "\xa4type"}, From: nil, To: []string{"null", "string"}},
-			},
-			nil,
-		},
-		{
 			"map-string-pointer-create",
 			map[string]*tmstruct{"one": &struct1},
 			map[string]*tmstruct{"one": &struct1, "two": &struct2},
@@ -617,8 +594,6 @@ func TestDiff(t *testing.T) {
 
 			var options []func(d *diff.Differ) error
 			switch tc.Name {
-			case "mixed-slice-map", "nil-map", "map-nil":
-				options = append(options, diff.StructMapKeySupport())
 			case "embedded-struct-field":
 				options = append(options, diff.FlattenEmbeddedStructs())
 			case "custom-tags":
